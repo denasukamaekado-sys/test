@@ -1,546 +1,920 @@
-const characters = [
-  {
-    id: "fox",
-    sigil: "狐",
-    image: "assets/characters/fox.png",
-    name: "影炎のキツネ",
-    className: "ルーンメイジ",
-    weapon: "魔導スタッフ",
-    accent: "rgba(255, 110, 125, 0.34)",
-    summary: "直感とひらめきで場を動かす作戦型。見えない勝ち筋を読むのが得意です。",
-    traits: ["発想力", "交渉力", "変化対応"],
-    details: [
-      {
-        title: "性格の核",
-        text: "あなたは状況の隙間にある可能性を見つけるのが上手です。決まった手順よりも、目の前の空気や相手の反応を見ながら、柔らかく作戦を変えていきます。",
-      },
-      {
-        title: "強みが出る場面",
-        text: "新しい企画、トラブル対応、交渉、アイデア出しで力を発揮します。まだ形になっていないものに輪郭を与え、周りを前向きに巻き込めます。",
-      },
-      {
-        title: "つまずきやすい場面",
-        text: "細かい確認作業や長く同じ作業を続ける場面では、気持ちが先に次へ向かいやすいタイプです。詰めの段階では相棒やチェックリストを置くと安定します。",
-      },
-      {
-        title: "伸ばし方",
-        text: "ひらめいたことを一度メモに落として、優先順位を3つに絞ると武器がさらに鋭くなります。自由さに小さな型を足すのが成長の鍵です。",
-      },
-    ],
-    quest: "今日は思いついた案を一つだけ選び、5分で試せる形にしてみましょう。",
-  },
-  {
-    id: "wolf",
-    sigil: "狼",
-    image: "assets/characters/wolf.png",
-    name: "銀牙のオオカミ",
-    className: "フロントナイト",
-    weapon: "大剣",
-    accent: "rgba(129, 153, 171, 0.32)",
-    summary: "仲間を守りながら前へ進む実行型。信頼を積み上げるほど強くなります。",
-    traits: ["責任感", "継続力", "チーム力"],
-    details: [
-      {
-        title: "性格の核",
-        text: "あなたは約束や信頼を大切にするタイプです。派手に見せるよりも、必要なことを着実に進め、周りが安心して動ける状態を作ります。",
-      },
-      {
-        title: "強みが出る場面",
-        text: "チーム作業、長期プロジェクト、誰かを支える役割で強さが出ます。人から任されたことに対して、最後まで責任を持って向き合えます。",
-      },
-      {
-        title: "つまずきやすい場面",
-        text: "抱え込みすぎると、自分の疲れに気づくのが遅れます。頼られるほど頑張れる一方で、無理を隠してしまうことがあります。",
-      },
-      {
-        title: "伸ばし方",
-        text: "最初に役割と期限を言葉にしておくと、あなたの安定感がより伝わります。助けを求めることもチームを守る行動です。",
-      },
-    ],
-    quest: "今日のタスクを一つだけ誰かに共有し、協力しやすい形に整えてみましょう。",
-  },
-  {
-    id: "owl",
-    sigil: "梟",
-    image: "assets/characters/owl.png",
-    name: "星射ちのフクロウ",
-    className: "スカイレンジャー",
-    weapon: "ロングボウ",
-    accent: "rgba(54, 189, 242, 0.32)",
-    summary: "観察してから的確に撃つ分析型。情報整理と冷静な判断で流れを変えます。",
-    traits: ["分析力", "集中力", "先読み"],
-    details: [
-      {
-        title: "性格の核",
-        text: "あなたはすぐに飛び込むより、まず状況をよく見てから動くタイプです。表面の勢いに流されず、根拠や構造を読み取ろうとします。",
-      },
-      {
-        title: "強みが出る場面",
-        text: "調査、比較、計画、文章化、問題の原因探しで力を発揮します。情報が散らかっている場面ほど、必要な一点を見抜けます。",
-      },
-      {
-        title: "つまずきやすい場面",
-        text: "情報を集めすぎると、行動に移るタイミングを逃しやすくなります。完璧な答えを待つより、仮説で一歩進む方が結果につながることもあります。",
-      },
-      {
-        title: "伸ばし方",
-        text: "判断基準を先に決めておくと、分析が長引きにくくなります。70%見えたら一度撃つ、くらいの感覚が相性抜群です。",
-      },
-    ],
-    quest: "気になっていることを一つ選び、判断基準を3行で書き出してみましょう。",
-  },
-  {
-    id: "bear",
-    sigil: "熊",
-    image: "assets/characters/bear.png",
-    name: "巌盾のクマ",
-    className: "ガーディアン",
-    weapon: "ウォーハンマー",
-    accent: "rgba(245, 185, 66, 0.32)",
-    summary: "焦らず受け止め、必要な一撃を入れる安定型。土台づくりで力を発揮します。",
-    traits: ["安定感", "忍耐力", "包容力"],
-    details: [
-      {
-        title: "性格の核",
-        text: "あなたは落ち着きと粘り強さで周りを支えるタイプです。急な変化にも大きく崩れず、まず受け止めてから現実的な手を探します。",
-      },
-      {
-        title: "強みが出る場面",
-        text: "継続、管理、育成、土台づくり、守りの判断で強さが出ます。短距離より長距離で真価を発揮し、周りに安心感を与えます。",
-      },
-      {
-        title: "つまずきやすい場面",
-        text: "慎重さが強く出ると、動き出しが少し遅くなることがあります。また、自分が我慢すればいいと考えすぎると負担が溜まります。",
-      },
-      {
-        title: "伸ばし方",
-        text: "守るものと手放すものを分けると、判断が軽くなります。小さな変化を先に試すことで、安定感とスピードを両立できます。",
-      },
-    ],
-    quest: "今抱えていることを、守るもの・任せるもの・後回しにするものに分けてみましょう。",
-  },
-  {
-    id: "cat",
-    sigil: "猫",
-    image: "assets/characters/cat.png",
-    name: "夜爪のネコ",
-    className: "シャドウローグ",
-    weapon: "ツインダガー",
-    accent: "rgba(140, 109, 255, 0.3)",
-    summary: "身軽に試して突破口を作る機動型。自由度が高いほど鋭く動けます。",
-    traits: ["瞬発力", "柔軟性", "観察眼"],
-    details: [
-      {
-        title: "性格の核",
-        text: "あなたは小回りのよさと独自の観察眼を持つタイプです。正面突破だけにこだわらず、横道や抜け道から流れを変えるのが得意です。",
-      },
-      {
-        title: "強みが出る場面",
-        text: "試行錯誤、改善、探索、短期集中の場面で力が出ます。周りが見落とした違和感に気づき、軽やかに軌道修正できます。",
-      },
-      {
-        title: "つまずきやすい場面",
-        text: "細かく管理される環境や、理由のないルールが多い場所では力を出しにくくなります。自由がないと集中力が散りやすいタイプです。",
-      },
-      {
-        title: "伸ばし方",
-        text: "自由に動ける範囲を先に決めると、あなたの機動力はさらに活きます。期限とゴールだけ握って、方法は自分流にするのが合っています。",
-      },
-    ],
-    quest: "気になっている作業を一つ、いつもと違うやり方で10分だけ試してみましょう。",
-  },
-  {
-    id: "deer",
-    sigil: "鹿",
-    image: "assets/characters/deer.png",
-    name: "翠晶のシカ",
-    className: "クリスタルプリースト",
-    weapon: "水晶スピア",
-    accent: "rgba(66, 212, 155, 0.32)",
-    summary: "空気を整え、人の力を引き出す調和型。静かな影響力を持っています。",
-    traits: ["共感力", "調整力", "回復力"],
-    details: [
-      {
-        title: "性格の核",
-        text: "あなたは人の気持ちや場の温度に気づきやすいタイプです。誰かが言葉にできていない違和感を拾い、安心して話せる空気を作れます。",
-      },
-      {
-        title: "強みが出る場面",
-        text: "相談、調整、サポート、チームの雰囲気づくりで力を発揮します。強く押すより、自然に人を動きやすくする影響力があります。",
-      },
-      {
-        title: "つまずきやすい場面",
-        text: "周りを優先しすぎると、自分の希望を後回しにしがちです。全員を大切にしようとして、決断が遅れることもあります。",
-      },
-      {
-        title: "伸ばし方",
-        text: "自分の希望を先に一文で言ってから調整に入ると、優しさが消耗に変わりにくくなります。境界線も思いやりの一部です。",
-      },
-    ],
-    quest: "今日は一つだけ、自分の希望を先に伝えてから相談を始めてみましょう。",
-  },
-  {
-    id: "rabbit",
-    sigil: "兎",
-    image: "assets/characters/rabbit.png",
-    name: "閃脚のウサギ",
-    className: "ライトデュエリスト",
-    weapon: "レイピア",
-    accent: "rgba(255, 156, 95, 0.32)",
-    summary: "軽やかに動きながら好機をつかむ挑戦型。小さな一歩を連続させるのが得意です。",
-    traits: ["行動力", "好奇心", "スピード"],
-    details: [
-      {
-        title: "性格の核",
-        text: "あなたは考えながら動ける軽やかなタイプです。大きな準備よりも、まず小さく試して、反応を見ながらテンポよく進めます。",
-      },
-      {
-        title: "強みが出る場面",
-        text: "新しい挑戦、短期目標、イベント、発信、学び始めで力を発揮します。最初の一歩を踏み出す速さが周りの背中を押します。",
-      },
-      {
-        title: "つまずきやすい場面",
-        text: "興味が移りやすいため、長い計画では途中で別の刺激に惹かれることがあります。勢いだけで約束を増やしすぎる点にも注意です。",
-      },
-      {
-        title: "伸ばし方",
-        text: "短い区切りと見える達成感を用意すると継続力が上がります。大きな目標を一週間ごとのミニクエストに分けましょう。",
-      },
-    ],
-    quest: "やりたいことを一つ選び、今日中に終わる最小ステップまで小さくしてみましょう。",
-  },
-  {
-    id: "lion",
-    sigil: "獅",
-    image: "assets/characters/lion.png",
-    name: "暁冠のライオン",
-    className: "ロードコマンダー",
-    weapon: "バトルアックス",
-    accent: "rgba(230, 132, 43, 0.34)",
-    summary: "迷いを断ち、全体を引っ張る統率型。大事な場面で決断力が光ります。",
-    traits: ["統率力", "決断力", "突破力"],
-    details: [
-      {
-        title: "性格の核",
-        text: "あなたは大事な場面で腹を決められるタイプです。曖昧な状況でも方向性を示し、周りが動き出すきっかけを作れます。",
-      },
-      {
-        title: "強みが出る場面",
-        text: "意思決定、リーダー役、勝負どころ、停滞した場の立て直しで力を発揮します。目標がはっきりしているほど推進力が増します。",
-      },
-      {
-        title: "つまずきやすい場面",
-        text: "急いで結果を出したい気持ちが強いと、周りの不安や細部を見落とすことがあります。正しさだけでなく納得感も大切です。",
-      },
-      {
-        title: "伸ばし方",
-        text: "決断の前に一人だけ別視点の意見を聞くと、判断の精度が上がります。強さに余白を足すと、より信頼されるリーダーになります。",
-      },
-    ],
-    quest: "迷っていることを一つ選び、判断に必要な条件を3つに絞って決めてみましょう。",
-  },
-];
-
-const questions = [
-  {
-    text: "知らないダンジョンに入る時、最初にやることは？",
-    answers: [
-      { label: "地形や敵の動きを観察する", note: "まず情報を集めてから動く", score: { owl: 2, fox: 1 } },
-      { label: "先頭に立って道を切り開く", note: "不確実でも前進する", score: { lion: 2, wolf: 1 } },
-      { label: "仲間の状態と役割を確認する", note: "全員が動きやすい形を作る", score: { deer: 2, bear: 1 } },
-      { label: "横道や隠し扉を探す", note: "面白い抜け道を見逃さない", score: { cat: 2, rabbit: 1 } },
-    ],
-  },
-  {
-    text: "急に予定が変わった時、あなたに近い反応は？",
-    answers: [
-      { label: "すぐ代案を出して切り替える", note: "変化を材料にする", score: { fox: 2, rabbit: 1 } },
-      { label: "影響範囲を整理して判断する", note: "慌てず全体像を見る", score: { owl: 2, bear: 1 } },
-      { label: "みんなが困っていないか確認する", note: "場の不安を減らす", score: { deer: 2, wolf: 1 } },
-      { label: "まず動いて、動きながら調整する", note: "止まるより試す", score: { rabbit: 2, cat: 1 } },
-    ],
-  },
-  {
-    text: "チームで一番任されやすい役割は？",
-    answers: [
-      { label: "方向性を決めるリーダー", note: "迷いを断つ係", score: { lion: 2, fox: 1 } },
-      { label: "最後まで支える守り役", note: "安定して完遂する係", score: { wolf: 2, bear: 1 } },
-      { label: "空気を整える調整役", note: "人と人をつなぐ係", score: { deer: 2, owl: 1 } },
-      { label: "突破口を探す遊撃役", note: "隙間を見つける係", score: { cat: 2, rabbit: 1 } },
-    ],
-  },
-  {
-    text: "褒められて一番うれしい言葉は？",
-    answers: [
-      { label: "発想が面白い", note: "ひらめきを認められたい", score: { fox: 2, cat: 1 } },
-      { label: "安心して任せられる", note: "信頼を大切にしたい", score: { wolf: 2, bear: 1 } },
-      { label: "よく見ている", note: "観察力を活かしたい", score: { owl: 2, deer: 1 } },
-      { label: "決断が早い", note: "勢いと判断力を出したい", score: { lion: 2, rabbit: 1 } },
-    ],
-  },
-  {
-    text: "強い敵が現れたら、どう戦う？",
-    answers: [
-      { label: "弱点を探して一気に突く", note: "勝ち筋を見抜く", score: { owl: 2, cat: 1 } },
-      { label: "味方を守りながら粘る", note: "崩れない陣形を作る", score: { bear: 2, wolf: 1 } },
-      { label: "相手の裏をかく作戦を出す", note: "予想外の手で揺さぶる", score: { fox: 2, lion: 1 } },
-      { label: "素早く動いてペースを乱す", note: "スピードで流れを変える", score: { rabbit: 2, cat: 1 } },
-    ],
-  },
-  {
-    text: "休みの日にエネルギーが戻る過ごし方は？",
-    answers: [
-      { label: "静かな場所で考えを整理する", note: "頭の中を整える", score: { owl: 2, deer: 1 } },
-      { label: "気の合う人と深く話す", note: "関係性で回復する", score: { deer: 2, wolf: 1 } },
-      { label: "新しい場所や体験に行く", note: "刺激で回復する", score: { rabbit: 2, fox: 1 } },
-      { label: "家でしっかり休んで備える", note: "体力を貯める", score: { bear: 2, cat: 1 } },
-    ],
-  },
-  {
-    text: "あなたが苦手になりやすい状況は？",
-    answers: [
-      { label: "理由が見えないまま急かされる", note: "納得してから進みたい", score: { owl: 2, bear: 1 } },
-      { label: "自由に試す余地がない", note: "動きの幅がほしい", score: { cat: 2, fox: 1 } },
-      { label: "誰も責任を取らない", note: "芯のある判断がほしい", score: { lion: 2, wolf: 1 } },
-      { label: "人の気持ちが置き去りになる", note: "関係性を大切にしたい", score: { deer: 2, bear: 1 } },
-    ],
-  },
-  {
-    text: "冒険の最後、あなたが手にしたいものは？",
-    answers: [
-      { label: "まだ誰も見つけていない知識", note: "世界の仕組みを知りたい", score: { owl: 2, fox: 1 } },
-      { label: "仲間と勝ち取った信頼", note: "一緒に強くなりたい", score: { wolf: 2, deer: 1 } },
-      { label: "自分で道を選んだ実感", note: "自由な選択を大切にしたい", score: { cat: 2, rabbit: 1 } },
-      { label: "大きな壁を越えた証", note: "挑戦の結果を残したい", score: { lion: 2, bear: 1 } },
-    ],
-  },
-];
-
-const state = {
-  current: 0,
-  answers: Array(questions.length).fill(null),
-};
-
-const characterGrid = document.querySelector("#characterGrid");
-const questionCount = document.querySelector("#questionCount");
-const questionText = document.querySelector("#questionText");
-const choiceList = document.querySelector("#choiceList");
-const progressBar = document.querySelector("#progressBar");
-const backButton = document.querySelector("#backButton");
-const nextButton = document.querySelector("#nextButton");
-const questionPanel = document.querySelector("#questionPanel");
-const loadingPanel = document.querySelector("#loadingPanel");
-const statusPill = document.querySelector("#statusPill");
-const resultShell = document.querySelector("#resultShell");
-
-function renderCharacters() {
-  characterGrid.innerHTML = characters
-    .map(
-      (character) => `
-        <article class="character-card" style="--accent: ${character.accent}">
-          <div class="character-avatar">
-            <img src="${character.image}" alt="${character.name}のキャラ画像" loading="lazy" />
-          </div>
-          <p class="character-class">${character.className}</p>
-          <h3>${character.name}</h3>
-          <span class="weapon-badge">武器: ${character.weapon}</span>
-          <p>${character.summary}</p>
-        </article>
-      `,
-    )
-    .join("");
+:root {
+  color-scheme: light;
+  --page: #f7fbff;
+  --paper: rgba(255, 255, 255, 0.88);
+  --paper-solid: #ffffff;
+  --ink: #202534;
+  --soft-ink: #5c6472;
+  --line: rgba(45, 64, 92, 0.14);
+  --line-strong: rgba(45, 64, 92, 0.24);
+  --sky: #36bdf2;
+  --blue: #4d73ff;
+  --mint: #42d49b;
+  --coral: #ff6e7d;
+  --gold: #f5b942;
+  --violet: #8c6dff;
+  --shadow: rgba(55, 79, 117, 0.18);
+  --radius: 8px;
+  --max-width: 1180px;
 }
 
-function renderQuestion() {
-  const question = questions[state.current];
-  const selectedIndex = state.answers[state.current];
-  const progress = ((state.current + 1) / questions.length) * 100;
-
-  questionCount.textContent = `QUESTION ${String(state.current + 1).padStart(2, "0")} / ${String(questions.length).padStart(2, "0")}`;
-  questionText.textContent = question.text;
-  progressBar.style.width = `${progress}%`;
-  backButton.disabled = state.current === 0;
-  nextButton.disabled = selectedIndex === null;
-  nextButton.textContent = state.current === questions.length - 1 ? "診断する" : "次へ";
-  statusPill.textContent = "ONLINE";
-
-  choiceList.innerHTML = question.answers
-    .map(
-      (answer, index) => `
-        <button class="choice-button ${selectedIndex === index ? "is-selected" : ""}" type="button" data-answer="${index}">
-          <span class="choice-token">${String.fromCharCode(65 + index)}</span>
-          <span>
-            <span class="choice-main">${answer.label}</span>
-            <span class="choice-note">${answer.note}</span>
-          </span>
-        </button>
-      `,
-    )
-    .join("");
+* {
+  box-sizing: border-box;
 }
 
-function calculateScores() {
-  const scores = Object.fromEntries(characters.map((character) => [character.id, 0]));
-
-  state.answers.forEach((answerIndex, questionIndex) => {
-    if (answerIndex === null) return;
-    const score = questions[questionIndex].answers[answerIndex].score;
-    Object.entries(score).forEach(([id, value]) => {
-      scores[id] += value;
-    });
-  });
-
-  return characters
-    .map((character) => ({
-      ...character,
-      score: scores[character.id],
-    }))
-    .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, "ja"));
+html {
+  scroll-behavior: smooth;
 }
 
-function showLoadingThenResult() {
-  questionPanel.style.display = "none";
-  loadingPanel.classList.add("is-visible");
-  statusPill.textContent = "SCANNING";
-  progressBar.style.width = "100%";
-
-  window.setTimeout(() => {
-    loadingPanel.classList.remove("is-visible");
-    questionPanel.style.display = "block";
-    renderResult();
-    document.querySelector("#result").scrollIntoView({ behavior: "smooth", block: "start" });
-    renderQuestion();
-  }, 850);
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    linear-gradient(rgba(68, 98, 140, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(68, 98, 140, 0.08) 1px, transparent 1px),
+    linear-gradient(135deg, #f9fdff 0%, #eef9ff 36%, #fff8ef 68%, #f6fff9 100%);
+  background-size: 42px 42px, 42px 42px, auto;
+  color: var(--ink);
+  font-family:
+    "Yu Gothic UI",
+    "Hiragino Sans",
+    "Meiryo",
+    system-ui,
+    sans-serif;
+  line-height: 1.7;
+  letter-spacing: 0;
 }
 
-function renderResult() {
-  const ranked = calculateScores();
-  const winner = ranked[0];
-  const topScore = Math.max(winner.score, 1);
-  const topThree = ranked.slice(0, 3);
-  const subType = ranked[1];
-
-  resultShell.innerHTML = `
-    <article class="result-card result-card-detailed">
-      <div class="result-portrait" style="--accent: ${winner.accent}">
-        <img class="result-character-img" src="${winner.image}" alt="${winner.name}のキャラ画像" />
-      </div>
-      <div class="result-body">
-        <p class="result-tag">Your Beast Arsenal</p>
-        <h3>${winner.name}</h3>
-        <p class="weapon-line">${winner.className} / 武器: ${winner.weapon}</p>
-        <p class="result-copy">${winner.summary}</p>
-        <ul class="trait-list">
-          ${winner.traits.map((trait) => `<li>${trait}</li>`).join("")}
-        </ul>
-        <div class="detail-grid">
-          ${winner.details
-            .map(
-              (detail) => `
-                <section class="detail-block">
-                  <h4>${detail.title}</h4>
-                  <p>${detail.text}</p>
-                </section>
-              `,
-            )
-            .join("")}
-        </div>
-        <section class="quest-box">
-          <h4>今日のミニクエスト</h4>
-          <p>${winner.quest}</p>
-        </section>
-        <section class="subtype-box">
-          <h4>サブタイプの傾向</h4>
-          <p>2番目に近いタイプは「${subType.name}」。あなたの中には、${subType.traits[0]}や${subType.traits[1]}の要素も混ざっています。</p>
-        </section>
-        <div class="match-list" aria-label="上位タイプとの相性">
-          ${topThree
-            .map((character) => {
-              const percent = Math.round((character.score / topScore) * 100);
-              return `
-                <div class="match-row">
-                  <span>${character.sigil} ${character.name.replace(/^.+の/, "")}</span>
-                  <span class="match-meter"><span style="width: ${percent}%"></span></span>
-                  <strong>${percent}%</strong>
-                </div>
-              `;
-            })
-            .join("")}
-        </div>
-        <div class="result-actions">
-          <button class="button button-primary" type="button" id="copyButton">
-            <span aria-hidden="true">⧉</span>
-            結果をコピー
-          </button>
-          <button class="button button-quiet" type="button" id="retryButton">
-            <span aria-hidden="true">↺</span>
-            もう一度
-          </button>
-        </div>
-      </div>
-    </article>
-  `;
-
-  document.querySelector("#copyButton").addEventListener("click", () => copyResult(winner, subType));
-  document.querySelector("#retryButton").addEventListener("click", resetQuiz);
+body::selection {
+  background: rgba(54, 189, 242, 0.24);
 }
 
-async function copyResult(winner, subType) {
-  const text = [
-    `獣装診断AIの結果: ${winner.name} (${winner.className})`,
-    `武器: ${winner.weapon}`,
-    `特徴: ${winner.traits.join(" / ")}`,
-    `ひとこと: ${winner.summary}`,
-    `サブタイプ: ${subType.name}`,
-  ].join("\n");
-  const copyButton = document.querySelector("#copyButton");
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-  try {
-    await navigator.clipboard.writeText(text);
-    copyButton.textContent = "コピーしました";
-  } catch {
-    copyButton.textContent = "コピー不可";
+#quiz,
+#result,
+#characters {
+  scroll-margin-top: 84px;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+}
+
+.site-shell {
+  overflow: hidden;
+}
+
+.topbar {
+  position: fixed;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 14px max(20px, calc((100vw - var(--max-width)) / 2));
+  border-bottom: 1px solid rgba(56, 78, 110, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 10px 30px rgba(70, 91, 122, 0.08);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 40px;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(77, 115, 255, 0.38);
+  border-radius: 8px;
+  color: var(--blue);
+  background: linear-gradient(135deg, #ffffff, #e8f6ff);
+  box-shadow: 0 8px 18px rgba(77, 115, 255, 0.16);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-links a {
+  min-height: 36px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--soft-ink);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible {
+  background: rgba(54, 189, 242, 0.12);
+  color: var(--ink);
+  outline: none;
+}
+
+.hero {
+  position: relative;
+  min-height: 92vh;
+  padding: 104px 20px 58px;
+  isolation: isolate;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+}
+
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 36%;
+  filter: saturate(1.05) contrast(1.02);
+}
+
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.78) 38%, rgba(255, 255, 255, 0.18) 74%),
+    linear-gradient(0deg, var(--page) 0%, rgba(247, 251, 255, 0.62) 26%, rgba(255, 255, 255, 0.08) 100%);
+}
+
+.hero::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background:
+    linear-gradient(rgba(77, 115, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(54, 189, 242, 0.08) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(90deg, black, transparent 76%);
+  pointer-events: none;
+}
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 472px);
+  align-items: end;
+  gap: 42px;
+  width: min(100%, var(--max-width));
+  min-height: calc(92vh - 162px);
+  margin: 0 auto;
+}
+
+.hero-copy {
+  max-width: 710px;
+  padding-bottom: 26px;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: #e07a18;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin: 0;
+  max-width: 690px;
+  color: var(--ink);
+  font-size: 4.05rem;
+  line-height: 1.04;
+  letter-spacing: 0;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.72);
+}
+
+.lead {
+  max-width: 620px;
+  margin: 1.35rem 0 0;
+  color: #394154;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 2rem;
+}
+
+.button,
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.button {
+  gap: 0.55rem;
+  min-height: 46px;
+  padding: 10px 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.button:hover,
+.icon-button:hover {
+  transform: translateY(-1px);
+}
+
+.button:focus-visible,
+.icon-button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.button-primary {
+  border-color: rgba(255, 110, 125, 0.4);
+  background: linear-gradient(135deg, #ff6e7d, #ff9c5f);
+  color: #ffffff;
+  box-shadow: 0 14px 28px rgba(255, 110, 125, 0.28);
+}
+
+.button-quiet {
+  border-color: rgba(45, 64, 92, 0.16);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--ink);
+  box-shadow: 0 10px 24px rgba(55, 79, 117, 0.1);
+}
+
+.button-secondary {
+  border-color: rgba(54, 189, 242, 0.34);
+  background: linear-gradient(135deg, rgba(54, 189, 242, 0.16), rgba(66, 212, 155, 0.18));
+  color: var(--ink);
+}
+
+.button-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  transform: none;
+  box-shadow: none;
+}
+
+.icon-button {
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  border-color: rgba(45, 64, 92, 0.14);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--ink);
+  font-size: 1.7rem;
+  line-height: 1;
+  box-shadow: 0 8px 18px rgba(55, 79, 117, 0.08);
+}
+
+.icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+  transform: none;
+  box-shadow: none;
+}
+
+.ai-console {
+  width: 100%;
+  min-height: 590px;
+  padding: 22px;
+  border: 1px solid rgba(45, 64, 92, 0.16);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(238, 249, 255, 0.9));
+  box-shadow: 0 24px 58px rgba(55, 79, 117, 0.2);
+  backdrop-filter: blur(16px);
+}
+
+.console-top,
+.quiz-controls,
+.result-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.console-label,
+.question-count,
+.character-class,
+.result-tag {
+  margin: 0;
+  color: #168cc0;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.console-top h2 {
+  margin: 0.1rem 0 0;
+  font-size: 1.25rem;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 4px 10px;
+  border: 1px solid rgba(66, 212, 155, 0.42);
+  border-radius: 999px;
+  color: #168f64;
+  background: rgba(66, 212, 155, 0.13);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.progress-wrap {
+  width: 100%;
+  height: 8px;
+  margin: 20px 0 24px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(45, 64, 92, 0.1);
+}
+
+.progress-bar {
+  width: 12.5%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--coral), var(--gold), var(--mint), var(--sky), var(--blue));
+  transition: width 220ms ease;
+}
+
+.question-panel {
+  display: block;
+}
+
+.question-panel h3 {
+  min-height: 86px;
+  margin: 0.45rem 0 18px;
+  color: var(--ink);
+  font-size: 1.35rem;
+  line-height: 1.45;
+}
+
+.choice-list {
+  display: grid;
+  gap: 10px;
+  min-height: 286px;
+}
+
+.choice-button {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
+  width: 100%;
+  min-height: 62px;
+  padding: 11px 12px;
+  border: 1px solid rgba(45, 64, 92, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 8px 18px rgba(55, 79, 117, 0.06);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.choice-button:hover,
+.choice-button:focus-visible {
+  border-color: rgba(54, 189, 242, 0.46);
+  background: #ffffff;
+  box-shadow: 0 12px 24px rgba(54, 189, 242, 0.13);
+  outline: none;
+}
+
+.choice-button.is-selected {
+  border-color: rgba(255, 110, 125, 0.56);
+  background: linear-gradient(135deg, rgba(255, 238, 241, 0.96), rgba(236, 250, 255, 0.96));
+  box-shadow: 0 12px 24px rgba(255, 110, 125, 0.13);
+}
+
+.choice-token {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(245, 185, 66, 0.46);
+  border-radius: 8px;
+  color: #b87000;
+  background: #fff8df;
+  font-weight: 900;
+}
+
+.choice-main {
+  display: block;
+  font-weight: 900;
+  line-height: 1.4;
+}
+
+.choice-note {
+  display: block;
+  margin-top: 2px;
+  color: var(--soft-ink);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.quiz-controls {
+  margin-top: 18px;
+}
+
+.loading-panel {
+  display: none;
+  min-height: 436px;
+  place-items: center;
+  text-align: center;
+}
+
+.loading-panel.is-visible {
+  display: grid;
+}
+
+.scan-ring {
+  width: 110px;
+  height: 110px;
+  border: 4px solid rgba(54, 189, 242, 0.16);
+  border-top-color: var(--sky);
+  border-right-color: var(--coral);
+  border-radius: 50%;
+  animation: spin 920ms linear infinite;
+}
+
+.loading-panel p {
+  margin: 1rem 0 0;
+  color: var(--soft-ink);
+  font-weight: 900;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.result-section,
+.characters-section {
+  width: min(100%, var(--max-width));
+  margin: 0 auto;
+  padding: 72px 20px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 2.1rem;
+  line-height: 1.18;
+}
+
+.result-shell {
+  min-height: 190px;
+}
+
+.empty-result,
+.result-card {
+  border: 1px solid rgba(45, 64, 92, 0.14);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.empty-result {
+  display: grid;
+  min-height: 170px;
+  place-items: center;
+  padding: 24px;
+  color: var(--soft-ink);
+  text-align: center;
+  box-shadow: 0 16px 36px rgba(55, 79, 117, 0.08);
+}
+
+.result-card {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.22fr);
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(239, 251, 255, 0.94));
+  box-shadow: 0 24px 54px rgba(55, 79, 117, 0.16);
+}
+
+.result-card-detailed {
+  align-items: stretch;
+}
+
+.result-portrait {
+  position: relative;
+  display: grid;
+  min-height: 520px;
+  place-items: center;
+  padding: 28px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), transparent),
+    linear-gradient(45deg, var(--accent), rgba(66, 212, 155, 0.2), rgba(54, 189, 242, 0.22));
+}
+
+.result-portrait::before {
+  position: absolute;
+  inset: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  border-radius: 8px;
+  content: "";
+}
+
+.result-character-img {
+  position: relative;
+  display: block;
+  width: min(100%, 360px);
+  max-height: 460px;
+  object-fit: contain;
+  border: 2px solid rgba(255, 255, 255, 0.68);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.54);
+  box-shadow: 0 22px 48px rgba(55, 79, 117, 0.22);
+}
+
+.result-body {
+  padding: 28px;
+}
+
+.result-body h3 {
+  margin: 0.35rem 0 0.7rem;
+  color: var(--ink);
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.weapon-line {
+  margin: 0 0 1rem;
+  color: #b87000;
+  font-weight: 900;
+}
+
+.result-copy {
+  margin: 0;
+  color: #394154;
+  font-weight: 700;
+}
+
+.trait-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trait-list li {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid rgba(45, 64, 92, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.detail-block,
+.quest-box,
+.subtype-box {
+  border: 1px solid rgba(45, 64, 92, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.detail-block {
+  min-height: 158px;
+  padding: 14px;
+}
+
+.detail-block h4,
+.quest-box h4,
+.subtype-box h4 {
+  margin: 0 0 0.45rem;
+  color: #168cc0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.detail-block p,
+.quest-box p,
+.subtype-box p {
+  margin: 0;
+  color: #394154;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.72;
+}
+
+.quest-box,
+.subtype-box {
+  margin-bottom: 10px;
+  padding: 14px 16px;
+}
+
+.quest-box {
+  background: linear-gradient(135deg, rgba(255, 247, 223, 0.92), rgba(236, 250, 255, 0.72));
+}
+
+.match-list {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 22px;
+}
+
+.match-row {
+  display: grid;
+  grid-template-columns: 95px 1fr 42px;
+  align-items: center;
+  gap: 10px;
+  color: var(--soft-ink);
+  font-size: 0.84rem;
+}
+
+.match-meter {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(45, 64, 92, 0.1);
+}
+
+.match-meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--coral), var(--gold), var(--mint), var(--sky));
+}
+
+.result-actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.character-card {
+  min-height: 332px;
+  padding: 16px;
+  border: 1px solid rgba(45, 64, 92, 0.12);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(241, 250, 255, 0.76)),
+    var(--paper-solid);
+  box-shadow: 0 18px 38px rgba(55, 79, 117, 0.12);
+}
+
+.character-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 116px;
+  height: 116px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.36)),
+    linear-gradient(135deg, var(--accent), rgba(54, 189, 242, 0.18));
+  box-shadow: 0 12px 24px rgba(55, 79, 117, 0.14);
+  overflow: hidden;
+}
+
+.character-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.character-card h3 {
+  margin: 0.25rem 0;
+  color: var(--ink);
+  font-size: 1.1rem;
+  line-height: 1.35;
+}
+
+.weapon-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  margin: 6px 0 12px;
+  padding: 4px 9px;
+  border: 1px solid rgba(245, 185, 66, 0.38);
+  border-radius: 8px;
+  color: #b87000;
+  background: #fff7df;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.character-card p {
+  margin: 0;
+  color: var(--soft-ink);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    min-height: auto;
+    padding-top: 92px;
   }
 
-  window.setTimeout(() => {
-    copyButton.innerHTML = '<span aria-hidden="true">⧉</span>結果をコピー';
-  }, 1400);
-}
-
-function resetQuiz() {
-  state.current = 0;
-  state.answers = Array(questions.length).fill(null);
-  resultShell.innerHTML = `
-    <div class="empty-result" id="emptyResult">
-      <p>まだ結果はありません。上の質問に答えると、あなたの獣装タイプがここに表示されます。</p>
-    </div>
-  `;
-  renderQuestion();
-  document.querySelector("#quiz").scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-choiceList.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-answer]");
-  if (!button) return;
-  state.answers[state.current] = Number(button.dataset.answer);
-  renderQuestion();
-});
-
-backButton.addEventListener("click", () => {
-  if (state.current === 0) return;
-  state.current -= 1;
-  renderQuestion();
-});
-
-nextButton.addEventListener("click", () => {
-  if (state.answers[state.current] === null) return;
-  if (state.current === questions.length - 1) {
-    showLoadingThenResult();
-    return;
+  .hero-layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
   }
-  state.current += 1;
-  renderQuestion();
-});
 
-renderCharacters();
-renderQuestion();
+  .hero-copy {
+    padding-bottom: 0;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+  }
+
+  .hero-scrim {
+    background:
+      linear-gradient(0deg, var(--page) 0%, rgba(247, 251, 255, 0.74) 34%, rgba(255, 255, 255, 0.28) 100%),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.42));
+  }
+
+  .character-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    align-items: flex-start;
+    padding: 10px 14px;
+  }
+
+  .brand {
+    min-height: 34px;
+    font-size: 0.94rem;
+  }
+
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+  }
+
+  .nav-links a {
+    min-height: 32px;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+
+  .hero {
+    padding: 92px 14px 48px;
+  }
+
+  .hero h1 {
+    font-size: 2.25rem;
+    line-height: 1.12;
+  }
+
+  .lead {
+    font-size: 0.96rem;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .ai-console {
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .console-top {
+    align-items: flex-start;
+  }
+
+  .question-panel h3 {
+    min-height: 0;
+    font-size: 1.12rem;
+  }
+
+  .choice-list {
+    min-height: 0;
+  }
+
+  .choice-button {
+    grid-template-columns: 30px 1fr;
+  }
+
+  .choice-token {
+    width: 30px;
+    height: 30px;
+  }
+
+  .result-section,
+  .characters-section {
+    padding: 52px 14px;
+  }
+
+  .section-heading {
+    display: block;
+  }
+
+  .section-heading h2 {
+    font-size: 1.65rem;
+  }
+
+  .result-card {
+    grid-template-columns: 1fr;
+  }
+
+  .result-portrait {
+    min-height: 300px;
+  }
+
+  .result-character-img {
+    width: min(100%, 260px);
+    max-height: 280px;
+  }
+
+  .result-body {
+    padding: 20px;
+  }
+
+  .result-body h3 {
+    font-size: 1.55rem;
+  }
+
+  .trait-list {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-block {
+    min-height: 0;
+  }
+
+  .match-row {
+    grid-template-columns: 78px 1fr 38px;
+  }
+
+  .character-grid {
+    grid-template-columns: 1fr;
+  }
+}
